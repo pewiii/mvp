@@ -28,10 +28,8 @@ class CategoryForm extends React.Component {
         <div className="mb-3">
           <h3>Add Category</h3>
           <label htmlFor="cat-name" className="form-label">Category Name</label>
-          <input id="cat-name" className="form-control" name="catName" type="text" onChange={this.formChange}/><br />
-          <label htmlFor="cat-color" className="form-label">Category Color</label><br />
-          <input id="cat-color" className="form-control" name="catColor" type="text" onChange={this.formChange}/>
-          <input className="btn btn-primary mt-2" type="submit" />
+          <input id="cat-name" className="form-control" name="catName" type="text" onChange={this.formChange}/>
+          <input className="btn btn-primary mt-2 mb-3" type="submit" />
         </div>
       </form>
     )

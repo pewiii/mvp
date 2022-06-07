@@ -13,7 +13,7 @@ var itemSchema = mongoose.Schema({
 
 var categorySchema = mongoose.Schema({
   name: { type: String, unique: true, required: true},
-  color: String
+  itemCount: { type: Number, default: 0 }
 })
 
 var Item = mongoose.model('Item', itemSchema);
@@ -28,10 +28,6 @@ var createCat = (cat) => {
   return newCat.save();
 }
 
-var deleteCat = () => {
-
-}
-
 var readItems = (category) => {
   console.log()
   var query = {};
@@ -43,11 +39,35 @@ var readItems = (category) => {
 
 var createItem = (item) => {
   var newItem = new Item(item);
-  return newItem.save();
+  return Category.findOne({ name: item.category })
+    .then(cat => {
+      console.log(cat);
+      cat.itemCount++
+      return Category.update({ name: item.category }, { itemCount: cat.itemCount })
+    })
+    .then(() => {
+      return newItem.save();
+    })
+
+  // return newItem.save();
 }
 
-var deleteItem = () => {
-
+var remove = (record) => {
+  if (record.type === 'item') {
+    return Item.findOne({ name: record.name })
+      .then(item => {
+        return Category.findOne({ name: item.category });
+      })
+      .then((category) => {
+        category.itemCount--;
+        return Category.update({ name: category.name }, category);
+      })
+      .then(() => {
+        return Item.remove({ name: record.name });
+      });
+  } else if (record.type === 'category') {
+    return Category.remove({ name: record.name });
+  }
 }
 
 var updateItem = () => {
@@ -57,9 +77,8 @@ var updateItem = () => {
 module.exports = {
   readCats,
   createCat,
-  deleteCat,
+  remove,
   readItems,
   createItem,
-  deleteItem,
   updateItem
 }

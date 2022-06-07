@@ -36,6 +36,17 @@ app.post('/create', (req, res) => {
   })
 })
 
+app.post('/delete', (req, res) => {
+  db.remove(req.body)
+  .then(() => {
+    res.sendStatus(201);
+  })
+  .catch((err) => {
+    console.error(err.message);
+    res.sendStatus(500);
+  })
+})
+
 app.listen(port, () => {
   console.log('Listening on port:', port);
 })

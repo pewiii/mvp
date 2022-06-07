@@ -9,10 +9,12 @@ class App extends React.Component {
     super();
     this.state = {
       items: [],
-      categories: []
+      categories: [],
+      currentCategory: 'all'
     }
     this.formSubmit = this.formSubmit.bind(this);
     this.categoryHandler = this.categoryHandler.bind(this);
+    this.itemDeleteHandler= this.itemDeleteHandler.bind(this);
   }
 
   componentDidMount() {
@@ -24,18 +26,22 @@ class App extends React.Component {
     .then(res => {
       res.json()
       .then(data => {
-        this.setState(data)
+        console.log(data);
+        this.setState(data);
       });
     });
   }
 
   categoryHandler(cat) {
     console.log(cat);
+    this.setState({currentCategory: cat});
     this.getItems(cat);
   }
 
-  formSubmit(data) {
-    fetch('create', {
+  itemDeleteHandler(item) {
+    console.log(item);
+    var data = { type: 'item', name: item }
+    fetch('delete', {
       method: 'POST',
       headers: {
       'Accept': 'application/json',
@@ -48,19 +54,33 @@ class App extends React.Component {
     });
   }
 
+  formSubmit(data) {
+    fetch('create', {
+      method: 'POST',
+      headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(() => {
+      this.getItems(this.state.currentCategory);
+    });
+  }
+
   render() {
     return (
     <div className="">
-        <h1 className="bg-primary text-center">Inventory Tracker</h1>
+        <h1 className="text-center">Inventory Tracker</h1>
       <div className="container">
         <div className="row">
           <div className="col-sm-3 p-3 m-3">
             <CategoryForm onSubmit={this.formSubmit}/>
-            <CategoryList categories={this.state.categories} handleClick={this.categoryHandler}/>
+            <CategoryList categories={this.state.categories} currentCategory={this.state.currentCategory} handleClick={this.categoryHandler}/>
           </div>
           <div className="col-sm-8 p-3 m-3">
             <ItemForm onSubmit={this.formSubmit} categories={this.state.categories}/>
-            <ItemList items={this.state.items}/>
+            <ItemList items={this.state.items} deleteHandler={this.itemDeleteHandler}/>
           </div>
         </div>
       </div>

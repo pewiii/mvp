@@ -3,11 +3,11 @@ import ItemListItem from './ItemListItem.jsx';
 
 var ItemList = (props) => {
   return (
-    <ul>
+    <div className="list-group">
       {props.items.map(item => {
-        return <ItemListItem key={item.name} item={item} />
+        return <ItemListItem key={item.name} item={item} deleteHandler={props.deleteHandler}/>
       })}
-    </ul>
+    </div>
   )
 }
 
