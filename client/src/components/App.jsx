@@ -10,11 +10,13 @@ class App extends React.Component {
     this.state = {
       items: [],
       categories: [],
-      currentCategory: 'all'
+      currentCategory: 'all',
+      itemEdit: false
     }
     this.formSubmit = this.formSubmit.bind(this);
     this.categoryHandler = this.categoryHandler.bind(this);
     this.itemDeleteHandler= this.itemDeleteHandler.bind(this);
+    this.itemEditHandler = this.itemEditHandler.bind(this);
   }
 
   componentDidMount() {
@@ -38,9 +40,8 @@ class App extends React.Component {
     this.getItems(cat);
   }
 
-  itemDeleteHandler(item) {
-    console.log(item);
-    var data = { type: 'item', name: item }
+  itemDeleteHandler(itemId) {
+    var data = { type: 'item', _id: itemId }
     fetch('delete', {
       method: 'POST',
       headers: {
@@ -50,12 +51,17 @@ class App extends React.Component {
       body: JSON.stringify(data)
     })
     .then(() => {
-      this.getItems();
+      this.getItems(this.state.currentCategory);
     });
   }
 
+  itemEditHandler(item) {
+    this.setState({ itemEdit: item })
+  }
+
   formSubmit(data) {
-    fetch('create', {
+    var url = data.operation ? 'update' : 'create';
+    fetch(url, {
       method: 'POST',
       headers: {
       'Accept': 'application/json',
@@ -64,6 +70,7 @@ class App extends React.Component {
       body: JSON.stringify(data)
     })
     .then(() => {
+      console.log('post update');
       this.getItems(this.state.currentCategory);
     });
   }
@@ -80,7 +87,7 @@ class App extends React.Component {
           </div>
           <div className="col-sm-8 p-3 m-3">
             <ItemForm onSubmit={this.formSubmit} categories={this.state.categories}/>
-            <ItemList items={this.state.items} deleteHandler={this.itemDeleteHandler}/>
+            <ItemList items={this.state.items} deleteHandler={this.itemDeleteHandler} editHandler={this.itemEditHandler} formSubmit={this.formSubmit}/>
           </div>
         </div>
       </div>
@@ -88,5 +95,6 @@ class App extends React.Component {
     )
   }
 }
+
 
 export default App

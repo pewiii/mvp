@@ -15,7 +15,7 @@ var CategoryList = (props) => {
   }, 0);
   return (
     <ul className="list-group">
-      <li className="list-group-item d-flex justify-content-between align-items-center" style={pointer} onClick={() => props.handleClick('all')}>Show All Items
+      <li className="list-group-item d-flex justify-content-between align-items-center" style={pointer} onClick={() => props.handleClick('all')}>All Items
       <span className={getBadgeClass('all')}>{totalItemCount}</span>
       </li>
       {props.categories.map(cat => {

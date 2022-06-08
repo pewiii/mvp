@@ -1,6 +1,6 @@
 import React from 'react';
 
-var ItemListItem = ({ item, deleteHandler }) => {
+var ItemListItem = ({ item, deleteHandler, editItem }) => {
   var pointer = {
     cursor: 'pointer'
   }
@@ -11,11 +11,10 @@ var ItemListItem = ({ item, deleteHandler }) => {
         <div className="text-center">
         <small><span>{item.unit} count: {item.unitQty} -- {item.qty} per {item.unit}</span></small><br />
           <span>Total Quantity: {item.qty * item.unitQty}</span>
-
         </div>
         <div className="text-end">
-          <small className="text-danger fw-bold" style={pointer} onClick={() => deleteHandler(item.name)}>Delete</small><br />
-          <small className="text-primary fw-bold" style={pointer}>Edit</small>
+          <small className="text-danger fw-bold" style={pointer} onClick={() => deleteHandler(item._id)}>Delete</small><br />
+          <small className="text-primary fw-bold" style={pointer} data-bs-toggle="modal" data-bs-target="#itemEdit" onClick={() => editItem(item)}>Edit</small>
         </div>
       </div>
       <p className="mb-1">{item.description}</p>

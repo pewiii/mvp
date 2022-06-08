@@ -2,12 +2,11 @@ const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/inventory');
 
 var itemSchema = mongoose.Schema({
-  name: { type: String, unique: true },
+  name: String,
   description: String,
   qty: Number,
   unit: String,
   unitQty: Number,
-  retain: Boolean,
   category: String
 });
 
@@ -43,7 +42,7 @@ var createItem = (item) => {
     .then(cat => {
       console.log(cat);
       cat.itemCount++
-      return Category.update({ name: item.category }, { itemCount: cat.itemCount })
+      return Category.updateOne({ name: item.category }, { itemCount: cat.itemCount })
     })
     .then(() => {
       return newItem.save();
@@ -54,24 +53,34 @@ var createItem = (item) => {
 
 var remove = (record) => {
   if (record.type === 'item') {
-    return Item.findOne({ name: record.name })
+    return Item.findOne({ _id: record._id })
       .then(item => {
         return Category.findOne({ name: item.category });
       })
       .then((category) => {
         category.itemCount--;
-        return Category.update({ name: category.name }, category);
+        return Category.updateOne({ name: category.name }, category);
       })
       .then(() => {
-        return Item.remove({ name: record.name });
+        return Item.remove({ _id: record._id });
       });
   } else if (record.type === 'category') {
     return Category.remove({ name: record.name });
   }
 }
 
-var updateItem = () => {
-
+var updateItem = (updateItem) => {
+  return Item.findOne(updateItem.item)
+    .then(item => {
+      if (updateItem.operation === 'add') {
+        item.unitQty += Number(updateItem.qty);
+      } else if(updateItem.operation === 'subtract') {
+        item.unitQty -= Number(updateItem.qty);
+      } else if(updateItem.operation === 'overwrite') {
+        item.unitQty = Number(updateItem.qty);
+      }
+      return Item.updateOne({ _id: item._id }, item)
+    })
 }
 
 module.exports = {

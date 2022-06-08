@@ -2,7 +2,7 @@ var express = require('express');
 var morgan = require('morgan');
 var path = require('path');
 var app = express();
-var port = 8080;
+var port = 3000;
 var td = require('./testData');
 var db = require('../database/index');
 var bodyParser = require('body-parser');
@@ -21,7 +21,7 @@ app.get('/items', (req, res) => {
       res.json({categories, items})
     })
   })
-})
+});
 
 app.post('/create', (req, res) => {
   var createFunc = req.body.type === 'cat' ? db.createCat : db.createItem;
@@ -34,7 +34,19 @@ app.post('/create', (req, res) => {
     console.error(err.message);
     res.sendStatus(500);
   })
-})
+});
+
+app.post('/update', (req, res) => {
+  console.log(req.body);
+  db.updateItem(req.body)
+  .then(() => {
+    res.sendStatus(201);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.sendStatus(500);
+  })
+});
 
 app.post('/delete', (req, res) => {
   db.remove(req.body)
@@ -45,8 +57,8 @@ app.post('/delete', (req, res) => {
     console.error(err.message);
     res.sendStatus(500);
   })
-})
+});
 
 app.listen(port, () => {
   console.log('Listening on port:', port);
-})
+});
