@@ -12,6 +12,10 @@ app.use(bodyParser.json());
 app.use(morgan('tiny'));
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/index.html'));
+});
+
 app.get('/items', (req, res) => {
   console.log(req.query.category);
   db.readItems(req.query.category)
