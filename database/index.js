@@ -4,9 +4,7 @@ mongoose.connect('mongodb://localhost/inventory');
 var itemSchema = mongoose.Schema({
   name: String,
   description: String,
-  qty: Number,
-  unit: String,
-  unitQty: Number,
+  quantity: Number,
   category: String
 });
 
@@ -73,11 +71,11 @@ var updateItem = (updateItem) => {
   return Item.findOne(updateItem.item)
     .then(item => {
       if (updateItem.operation === 'add') {
-        item.unitQty += Number(updateItem.qty);
+        item.quantity += Number(updateItem.qty);
       } else if(updateItem.operation === 'subtract') {
-        item.unitQty -= Number(updateItem.qty);
+        item.quantity -= Number(updateItem.qty);
       } else if(updateItem.operation === 'overwrite') {
-        item.unitQty = Number(updateItem.qty);
+        item.quantity = Number(updateItem.qty);
       }
       return Item.updateOne({ _id: item._id }, item)
     })

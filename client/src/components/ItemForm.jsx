@@ -6,9 +6,7 @@ class ItemForm extends React.Component {
     this.state = {
       name: '',
       description: '',
-      qty: '',
-      unit: '',
-      unitQty: '',
+      quantity: '',
       category: '',
     }
     this.formChange = this.formChange.bind(this);
@@ -45,14 +43,8 @@ class ItemForm extends React.Component {
                 <label htmlFor="itemDescription" className="form-label">Description</label>
                 <input id="item-description" className="form-control" name="itemDescription" onChange={this.formChange}/>
 
-                <label htmlFor="itemQty">Quantity per Unit</label>
-                <input id="item-qty" className="form-control" name="itemQty" type="text" onChange={this.formChange}/>
-
-                <label htmlFor="itemUnit" className="form-label">Unit Name</label>
-                <input id="item-unit" className="form-control" name="itemUnit" type="text" onChange={this.formChange}/>
-
-                <label htmlFor="itemUnitQty" className="form-label">Number of Units</label>
-                <input id="item-unitQty" className="form-control" name="itemUnitQty" type="text" onChange={this.formChange}/>
+                <label htmlFor="itemQuantity" className="form-label">Quantity</label>
+                <input id="item-quantity" className="form-control" name="itemQuantity" type="text" onChange={this.formChange}/>
 
                 <label htmlFor="categories" className="form-label">Category</label>
                 <select id="item-category" className="form-control" name="categories" onChange={this.formChange}>

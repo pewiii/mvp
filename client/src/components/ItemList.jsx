@@ -67,7 +67,7 @@ class ItemList extends React.Component {
               </div>
 
                 <label className="mt-2" htmlFor="editQuantity">Quantity</label>
-                <input type="text" className="form-control" id="editQuantity" placeholder={getPlaceHolderText(this.state.editItem.unit, this.state.operation)} onChange={this.itemQtyChangeHandler}/>
+                <input type="text" className="form-control" id="editQuantity" placeholder={getPlaceHolderText(this.state.operation)} onChange={this.itemQtyChangeHandler}/>
               </div>
           <div className="modal-footer">
             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -83,11 +83,11 @@ class ItemList extends React.Component {
   }
 }
 
-var getPlaceHolderText = (unit, operation) => {
+var getPlaceHolderText = (operation) => {
   if (operation === 'overwrite') {
-    return 'enter new ' + unit + ' count'
+    return 'Enter new quantity';
   } else {
-    return unit + ' count to ' + operation;
+    return 'Enter quantity to ' + operation;
   }
 }
 
