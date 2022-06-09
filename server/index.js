@@ -28,7 +28,7 @@ app.get('/items', (req, res) => {
 });
 
 app.post('/create', (req, res) => {
-  var createFunc = req.body.type === 'cat' ? db.createCat : db.createItem;
+  var createFunc = req.body.type === 'addCat' ? db.createCat : db.createItem;
   createFunc(req.body)
   .then(result => {
     console.log(result);
@@ -53,6 +53,7 @@ app.post('/update', (req, res) => {
 });
 
 app.post('/delete', (req, res) => {
+  console.log(req.body);
   db.remove(req.body)
   .then(() => {
     res.sendStatus(201);
@@ -61,6 +62,10 @@ app.post('/delete', (req, res) => {
     console.error(err.message);
     res.sendStatus(500);
   })
+});
+
+app.get('/search', (req, res) => {
+  res.sendStatus(200);
 });
 
 app.listen(port, () => {

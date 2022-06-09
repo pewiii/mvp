@@ -51,7 +51,7 @@ var createItem = (item) => {
 
 var remove = (record) => {
   if (record.type === 'item') {
-    return Item.findOne({ _id: record._id })
+    return Item.findOne({ _id: record.data._id })
       .then(item => {
         return Category.findOne({ name: item.category });
       })
@@ -60,10 +60,13 @@ var remove = (record) => {
         return Category.updateOne({ name: category.name }, category);
       })
       .then(() => {
-        return Item.remove({ _id: record._id });
+        return Item.deleteMany({ _id: record.data._id });
       });
-  } else if (record.type === 'category') {
-    return Category.remove({ name: record.name });
+  } else if (record.type === 'cat') {
+    return Category.remove({ name: record.data.name })
+      .then(() => {
+        return Item.deleteMany({ category: record.data.name });
+      })
   }
 }
 

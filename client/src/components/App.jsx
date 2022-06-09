@@ -3,6 +3,7 @@ import CategoryList from './CategoryList.jsx';
 import ItemList from './ItemList.jsx';
 import CategoryForm from './CategoryForm.jsx';
 import ItemForm from './ItemForm.jsx';
+import Search from './Search.jsx';
 
 class App extends React.Component {
   constructor() {
@@ -15,8 +16,9 @@ class App extends React.Component {
     }
     this.formSubmit = this.formSubmit.bind(this);
     this.categoryHandler = this.categoryHandler.bind(this);
-    this.itemDeleteHandler= this.itemDeleteHandler.bind(this);
+    this.deleteHandler= this.deleteHandler.bind(this);
     this.itemEditHandler = this.itemEditHandler.bind(this);
+    this.onSearch = this.onSearch.bind(this);
   }
 
   componentDidMount() {
@@ -35,13 +37,11 @@ class App extends React.Component {
   }
 
   categoryHandler(cat) {
-    console.log(cat);
     this.setState({currentCategory: cat});
     this.getItems(cat);
   }
 
-  itemDeleteHandler(itemId) {
-    var data = { type: 'item', _id: itemId }
+  deleteHandler(data) {
     fetch('delete', {
       method: 'POST',
       headers: {
@@ -57,6 +57,13 @@ class App extends React.Component {
 
   itemEditHandler(item) {
     this.setState({ itemEdit: item })
+  }
+
+  onSearch(term) {
+    fetch('search?' + new URLSearchParams({search: term }))
+    .then(searcResults => {
+      console.log(searchResults);
+    });
   }
 
   formSubmit(data) {
@@ -78,16 +85,17 @@ class App extends React.Component {
   render() {
     return (
     <div className="">
-        <h1 className="text-center">Inventory Tracker</h1>
+        <h1 className="text-center mt-4">Inventory Tracker</h1>
       <div className="container">
         <div className="row">
           <div className="col-sm-3 p-3 m-3">
-            <CategoryForm onSubmit={this.formSubmit}/>
+            <CategoryForm onSubmit={this.formSubmit} deleteHandler={this.deleteHandler}/>
             <CategoryList categories={this.state.categories} currentCategory={this.state.currentCategory} handleClick={this.categoryHandler}/>
           </div>
           <div className="col-sm-8 p-3 m-3">
+            <Search onSearch={this.onSearch}/>
             <ItemForm onSubmit={this.formSubmit} categories={this.state.categories}/>
-            <ItemList items={this.state.items} deleteHandler={this.itemDeleteHandler} editHandler={this.itemEditHandler} formSubmit={this.formSubmit}/>
+            <ItemList items={this.state.items} deleteHandler={this.deleteHandler} editHandler={this.itemEditHandler} formSubmit={this.formSubmit}/>
           </div>
         </div>
       </div>
