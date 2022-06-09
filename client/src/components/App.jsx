@@ -61,9 +61,12 @@ class App extends React.Component {
 
   onSearch(term) {
     fetch('search?' + new URLSearchParams({search: term }))
-    .then(searcResults => {
-      console.log(searchResults);
-    });
+    .then(res => {
+      res.json()
+      .then(data => {
+        this.setState({items: data});
+      })
+    })
   }
 
   formSubmit(data) {

@@ -84,11 +84,38 @@ var updateItem = (updateItem) => {
     })
 }
 
+var search = (query) => {
+  var regex = new RegExp(query.search);
+  return Item.find({
+    $or:[
+          {
+            description: {
+              $regex: regex,
+              $options: 'i'
+            }
+          },
+          {
+            name: {
+              $regex: regex,
+              $options: 'i'
+            }
+          },
+          {
+            category: {
+              $regex: regex,
+              $options: 'i'
+            }
+          }
+        ]
+    });
+}
+
 module.exports = {
   readCats,
   createCat,
   remove,
   readItems,
   createItem,
-  updateItem
+  updateItem,
+  search
 }

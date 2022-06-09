@@ -3,7 +3,6 @@ var morgan = require('morgan');
 var path = require('path');
 var app = express();
 var port = 3000;
-var td = require('./testData');
 var db = require('../database/index');
 var bodyParser = require('body-parser');
 
@@ -65,7 +64,15 @@ app.post('/delete', (req, res) => {
 });
 
 app.get('/search', (req, res) => {
-  res.sendStatus(200);
+  db.search(req.query)
+  .then(results => {
+    console.log(results);
+    res.json(results);
+  })
+  .catch(err => {
+    res.sendStatus(500);
+    console.error(err);
+  });
 });
 
 app.listen(port, () => {
