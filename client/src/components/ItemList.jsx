@@ -38,8 +38,8 @@ class ItemList extends React.Component {
     return (
       <React.Fragment>
       <div className="list-group">
-        {this.props.items.map(item => {
-          return <ItemListItem key={item._id} item={item} deleteHandler={this.props.deleteHandler} editItem={this.setEditItem}/>
+        {this.props.items.map((item, index) => {
+          return <ItemListItem key={item._id} item={{ ...item, index }} deleteHandler={this.props.deleteHandler} editItem={this.setEditItem}/>
 
         })}
       </div>

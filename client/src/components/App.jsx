@@ -4,6 +4,8 @@ import ItemList from './ItemList.jsx';
 import CategoryForm from './CategoryForm.jsx';
 import ItemForm from './ItemForm.jsx';
 import Search from './Search.jsx';
+import 'bootstrap';
+import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 class App extends React.Component {
   constructor() {
@@ -25,13 +27,23 @@ class App extends React.Component {
     this.getItems();
   }
 
-  getItems(category = "all") {
-    fetch('items?' + new URLSearchParams({category}))
+  getItems(category = "all", item) {
+    var searchParams = { category };
+    if (item) {
+      searchParams.id = item._id;
+    }
+    fetch('items?' + new URLSearchParams(searchParams))
     .then(res => {
       res.json()
       .then(data => {
-        console.log(data);
-        this.setState(data);
+        if (Array.isArray(data.items)) {
+          console.log(data);
+          this.setState(data);
+        } else {
+          var newItems = [...this.state.items];
+          newItems[item.index] = data.items;
+          this.setState({ items: newItems});
+        }
       });
     });
   }
@@ -80,8 +92,8 @@ class App extends React.Component {
       body: JSON.stringify(data)
     })
     .then(() => {
-      console.log('post update');
-      this.getItems(this.state.currentCategory);
+      console.log('data', data);
+      this.getItems(this.state.currentCategory, data.item);
     });
   }
 

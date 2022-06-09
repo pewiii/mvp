@@ -16,8 +16,8 @@ app.get('/', (req, res) => {
 });
 
 app.get('/items', (req, res) => {
-  console.log(req.query.category);
-  db.readItems(req.query.category)
+  console.log(req.query);
+  db.readItems(req.query)
   .then(items => {
     db.readCats()
     .then(categories => {
@@ -40,7 +40,7 @@ app.post('/create', (req, res) => {
 });
 
 app.post('/update', (req, res) => {
-  console.log(req.body);
+  //console.log(req.body);
   db.updateItem(req.body)
   .then(() => {
     res.sendStatus(201);
@@ -66,7 +66,6 @@ app.post('/delete', (req, res) => {
 app.get('/search', (req, res) => {
   db.search(req.query)
   .then(results => {
-    console.log(results);
     res.json(results);
   })
   .catch(err => {

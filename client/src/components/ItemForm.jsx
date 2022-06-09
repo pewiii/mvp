@@ -34,6 +34,7 @@ class ItemForm extends React.Component {
               e.target.reset();
               document.getElementById('collapseBtn').click();
               this.props.onSubmit({...this.state, type: 'item'});
+              this.setState(getInitialState());
             }}>
               <div>
                 <h3>Add Item</h3>
@@ -60,6 +61,15 @@ class ItemForm extends React.Component {
       </React.Fragment>
     )
   }
+}
+
+var getInitialState = () => {
+  return  {
+    name: '',
+    description: '',
+    quantity: '',
+    category: '',
+  };
 }
 
 export default ItemForm;

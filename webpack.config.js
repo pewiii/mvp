@@ -21,6 +21,13 @@ module.exports = {
           "source-map-loader"
         ]
       },
+      {
+        test: /\.css$/,
+        use: [
+          "style-loader",
+          "css-loader"
+        ]
+      }
     ]
 
   }

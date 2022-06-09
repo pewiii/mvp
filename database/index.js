@@ -25,11 +25,16 @@ var createCat = (cat) => {
   return newCat.save();
 }
 
-var readItems = (category) => {
+var readItems = (query) => {
+  var category = query.category;
+  var id = query.id;
   console.log()
   var query = {};
   if (category !== 'all') {
     query.category = category;
+  }
+  if (id) {
+    return Item.findOne({ _id: id });
   }
   return Item.find(query);
 }
