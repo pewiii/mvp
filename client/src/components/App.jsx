@@ -4,8 +4,6 @@ import ItemList from './ItemList.jsx';
 import CategoryForm from './CategoryForm.jsx';
 import ItemForm from './ItemForm.jsx';
 import Search from './Search.jsx';
-import 'bootstrap';
-import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 class App extends React.Component {
   constructor() {
@@ -97,10 +95,18 @@ class App extends React.Component {
     });
   }
 
+  logout() {
+    fetch('logout')
+    .then(() => {
+      window.location.reload();
+    })
+  }
+
   render() {
     return (
     <div className="">
         <h1 className="text-center mt-4">Inventory Tracker</h1>
+        <button className="btn btn-primary ms-4" onClick={this.logout}>Logout</button>
       <div className="container">
         <div className="row">
           <div className="col-sm-3 p-3 m-3">

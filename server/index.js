@@ -5,74 +5,162 @@ var app = express();
 var port = 3000;
 var db = require('../database/index');
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var sessions = require('express-session');
+var auth = require('../auth/index');
 
+var secret = "thisisasecretstring"
+var expire = 1000 * 60 * 60 * 24;
+
+app.use(cookieParser());
+app.use(sessions({
+  secret,
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    maxAge: expire
+  }
+}));
 app.use(bodyParser.json());
 //app.use(bodyParser.urlencoded({ extended: false }))
 app.use(morgan('tiny'));
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/index.html'));
+    res.sendFile(path.join(__dirname, '../client/index.html'));
 });
 
 app.get('/items', (req, res) => {
-  console.log(req.query);
-  db.readItems(req.query)
-  .then(items => {
-    db.readCats()
-    .then(categories => {
-      res.json({categories, items})
+  auth.verifySession(req.session.id, req.session.userId)
+  .then(() => {
+    db.readItems(req.query, req.session.userId)
+    .then(items => {
+      db.readCats(req.session.userId)
+      .then(categories => {
+        res.json({categories, items})
+      })
+    }).catch(err => {
+      console.log(err);
     })
-  })
+  }).catch((err) => {
+    console.log(err);
+    res.sendStatus(401);
+  });
 });
 
 app.post('/create', (req, res) => {
-  var createFunc = req.body.type === 'addCat' ? db.createCat : db.createItem;
-  createFunc(req.body)
-  .then(result => {
-    console.log(result);
-    res.sendStatus(201);
-  })
-  .catch(err => {
-    console.error(err.message);
-    res.sendStatus(500);
-  })
+  auth.verifySession(req.session.id, req.session.userId)
+  .then(() => {
+    var createFunc = req.body.type === 'addCat' ? db.createCat : db.createItem;
+    createFunc(req.body, req.session.userId)
+    .then(result => {
+      console.log(result);
+      res.sendStatus(201);
+    })
+    .catch(err => {
+      console.error(err.message);
+      res.sendStatus(500);
+    });
+  }).catch(() => {
+    res.sendStatus(401);
+  });
 });
 
 app.post('/update', (req, res) => {
-  //console.log(req.body);
-  db.updateItem(req.body)
+  auth.verifySession(req.session.id, req.session.userId)
   .then(() => {
-    res.sendStatus(201);
-  })
-  .catch((err) => {
-    console.error(err);
-    res.sendStatus(500);
-  })
+    db.updateItem(req.body, req.session.userId)
+    .then(() => {
+      res.sendStatus(201);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+  }).catch(() => {
+    res.sendStatus(401);
+  });
 });
 
 app.post('/delete', (req, res) => {
-  console.log(req.body);
-  db.remove(req.body)
+  auth.verifySession(req.session.id, req.session.userId)
   .then(() => {
-    res.sendStatus(201);
-  })
-  .catch((err) => {
-    console.error(err.message);
-    res.sendStatus(500);
-  })
+    db.remove(req.body, req.session.userId)
+    .then(() => {
+      res.sendStatus(201);
+    })
+    .catch((err) => {
+      console.error(err.message);
+      res.sendStatus(500);
+    });
+  }).catch(() => {
+    res.sendStatus(401);
+  });
 });
 
 app.get('/search', (req, res) => {
-  db.search(req.query)
-  .then(results => {
-    res.json(results);
-  })
-  .catch(err => {
-    res.sendStatus(500);
-    console.error(err);
+  auth.verifySession(req.session.id, req.session.userId)
+  .then(() => {
+    db.search(req.query, req.session.userId)
+    .then(results => {
+      res.json(results);
+    })
+    .catch(err => {
+      res.sendStatus(500);
+      console.error(err);
+    });
+  }).catch((err) => {
+    console.log(err);
+    res.sendStatus(401);
   });
 });
+
+app.post('/user', (req, res) => {
+  if (req.body.createUser) {
+    auth.newUser(req.body.username, req.body.password)
+    .then(user => {
+      db.saveSession(req.session.id, user._id)
+      .then(() => {
+        req.session.userId = user._id;
+        res.send('Login Success');
+      });
+    })
+  } else {
+    auth.verifyUser(req.body.username, req.body.password)
+    .then(user => {
+      console.log('LOGIN SUCCESS');
+      db.saveSession(req.session.id, user._id)
+      .then(() => {
+        req.session.userId = user._id;
+        res.send('Login Success');
+      });
+    }).catch(msg => {
+      console.log('LOGIN FAIL');
+    })
+  }
+});
+
+app.get('/user', (req, res) => {
+  auth.verifySession(req.session.id, req.session.userId)
+  .then(() => {
+    res.sendStatus(200);
+  }).catch((msg) => {
+    console.log(msg);
+    res.sendStatus(401);
+  });
+});
+
+app.get('/logout', (req, res) => {
+  db.destroySession(req.session.id)
+  .then(() => {
+    req.session.destroy((err) => {
+      res.send('Logout Success');
+    });
+  }).catch((err) => {
+    console.log(err);
+    res.sendStatus(500);
+  })
+})
 
 app.listen(port, () => {
   console.log('Listening on port:', port);
