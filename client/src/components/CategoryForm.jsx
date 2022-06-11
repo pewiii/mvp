@@ -32,7 +32,7 @@ class CategoryForm extends React.Component {
         <div className="mb-3">
           <h3>Categories</h3>
           <label htmlFor="cat-name" className="form-label">Add or Remove Categories</label>
-          <input id="cat-name" className="form-control" name="catName" type="text" onChange={this.formChange}/>
+          <input id="cat-name" className="form-control" name="catName" type="text" onChange={this.formChange} placeholder="Enter Category to Add or Delete"/>
           <input className="btn btn-primary mt-2 mb-3" type="submit" value="Create"/>
           <span className="text-danger fw-bold ms-4" style={pointer} onClick={() => {
             this.props.deleteHandler({type: 'cat', data: { name: this.state.name }});

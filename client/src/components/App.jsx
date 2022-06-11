@@ -12,13 +12,16 @@ class App extends React.Component {
       items: [],
       categories: [],
       currentCategory: 'all',
-      itemEdit: false
+      itemEdit: false,
+      sortUp: true,
+      selectedSort: ''
     }
     this.formSubmit = this.formSubmit.bind(this);
     this.categoryHandler = this.categoryHandler.bind(this);
     this.deleteHandler= this.deleteHandler.bind(this);
     this.itemEditHandler = this.itemEditHandler.bind(this);
     this.onSearch = this.onSearch.bind(this);
+    this.sort = this.sort.bind(this);
   }
 
   componentDidMount() {
@@ -40,14 +43,14 @@ class App extends React.Component {
         } else {
           var newItems = [...this.state.items];
           newItems[item.index] = data.items;
-          this.setState({ items: newItems});
+          this.setState({ items: newItems, selectedSort: '' });
         }
       });
     });
   }
 
   categoryHandler(cat) {
-    this.setState({currentCategory: cat});
+    this.setState({currentCategory: cat, selectedSort: ''});
     this.getItems(cat);
   }
 
@@ -74,7 +77,7 @@ class App extends React.Component {
     .then(res => {
       res.json()
       .then(data => {
-        this.setState({items: data});
+        this.setState({items: data, selectedSort: ''});
       })
     })
   }
@@ -102,12 +105,44 @@ class App extends React.Component {
     })
   }
 
+  sort(e) {
+    var sortOn = e.target.id.split('-')[1];
+    var items = this.state.items;
+    items.sort((a, b) => {
+      if (this.state.sortUp) {
+        if (a[sortOn] < b[sortOn]) { return -1 }
+        if (a[sortOn] > b[sortOn]) { return 1 }
+        return 0;
+      }
+      if (a[sortOn] > b[sortOn]) { return -1 }
+      if (a[sortOn] < b[sortOn]) { return 1 }
+      return 0;
+    })
+    console.log(!true);
+    var sortUp = !this.state.sortUp;
+    var selectedSort = sortOn
+    this.setState({ items, sortUp, selectedSort }, () => {
+      console.log(this.state);
+    });
+  }
+
   render() {
     return (
     <div className="">
-        <h1 className="text-center mt-4">Inventory Tracker</h1>
-        <button className="btn btn-primary ms-4" onClick={this.logout}>Logout</button>
+        <h1 className="text-center mt-4">Inventory Manager</h1>
+        <div className="container">
+          <div className="w-25 col">
+            <button className="btn btn-primary ms-4" onClick={this.logout}>Logout</button>
+          </div>
+        </div>
       <div className="container">
+        <div className="row justify-content-end">
+          <div className="col-3" style={moveDown}>
+            <button type="button" className={this.state.selectedSort === 'name' ? "btn btn-primary btn-sm" : "btn btn-secondary btn-sm"} id="sort-name" onClick={this.sort}>Name</button>
+            <button type="button" className={this.state.selectedSort === 'description' ? "btn btn-primary btn-sm" : "btn btn-secondary btn-sm"} id="sort-description" onClick={this.sort}>Description</button>
+            <button type="button" className={this.state.selectedSort === 'quantity' ? "btn btn-primary btn-sm" : "btn btn-secondary btn-sm"} id="sort-quantity" onClick={this.sort}>Count</button>
+          </div>
+        </div>
         <div className="row">
           <div className="col-sm-3 p-3 m-3">
             <CategoryForm onSubmit={this.formSubmit} deleteHandler={this.deleteHandler}/>
@@ -125,5 +160,9 @@ class App extends React.Component {
   }
 }
 
+var moveDown = {
+  position: 'relative',
+  top: 70
+}
 
 export default App

@@ -82,7 +82,7 @@ var remove = (record, userId) => {
         return Item.deleteMany({ _id: record.data._id, userId});
       });
   } else if (record.type === 'cat') {
-    return Category.remove({ name: record.data.name, userId })
+    return Category.deleteOne({ name: record.data.name, userId })
       .then(() => {
         return Item.deleteMany({ category: record.data.name, userId });
       })
@@ -99,6 +99,9 @@ var updateItem = (updateItem, userId) => {
         item.quantity -= Number(updateItem.qty);
       } else if(updateItem.operation === 'overwrite') {
         item.quantity = Number(updateItem.qty);
+      }
+      if (item.quantity < 0) {
+        item.quantity = 0;
       }
       return Item.updateOne({ _id: item._id }, item)
     })
