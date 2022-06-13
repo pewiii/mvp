@@ -36,6 +36,8 @@ class Login extends React.Component {
         this.setState({message: 'Username Taken'});
       } else if (res.status === 400) {
         this.setState({message: 'Invalid Username/Password'});
+      } else if (res.status === 406) {
+        this.setState({message: 'Username or Password too short'});
       } else {
         window.location.reload();
       }
@@ -45,9 +47,9 @@ class Login extends React.Component {
   render() {
     return (
       <div className="container">
-      <div className="col-md-4 offset-md-4 text-center mt-3">
-       <h1 className="d-block">Inventory Manager</h1>
-      </div>
+        <div className="col-md-4 offset-md-4 text-center mt-3">
+          <h1 className="d-block">Inventory Manager</h1>
+        </div>
         <div className="col-md-4 offset-md-4">
           <div className="mt-5">
             <form id="loginForm" onSubmit={this.onSubmit}>
@@ -61,9 +63,9 @@ class Login extends React.Component {
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className="text-danger">{this.state.message}</span>
                 </div>
                 <label htmlFor="username" className="form-label">Username</label>
-                <input id="username" className="form-control" type="text" onChange={this.inputChange} />
+                <input id="username" className="form-control" type="text" onChange={this.inputChange} placeholder="Username"/>
                 <label htmlFor="password" className="form-label">Password</label>
-                <input id="password" className="form-control" type="password" onChange={this.inputChange} />
+                <input id="password" className="form-control" type="password" onChange={this.inputChange} placeholder="Password"/>
                 <input className="btn btn-primary mt-2 mb-3" type="submit" value="Login/Create"/>
               </div>
             </form>

@@ -2,7 +2,7 @@ var express = require('express');
 var morgan = require('morgan');
 var path = require('path');
 var app = express();
-var port = 80;
+var port = 3000;
 var db = require('../database/index');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
@@ -117,6 +117,9 @@ app.get('/search', (req, res) => {
 
 app.post('/user', (req, res) => {
   if (req.body.createUser) {
+    if (req.body.password.length < 5 || req.body.username.length < 4) {
+      res.sendStatus(406);
+    } else {
     auth.newUser(req.body.username, req.body.password)
     .then(user => {
       db.saveSession(req.session.id, user._id)
@@ -127,6 +130,7 @@ app.post('/user', (req, res) => {
     }).catch(err => {
       res.sendStatus(409);
     });
+    }
   } else {
     console.log('PASSWORD', req.body.password);
     auth.verifyUser(req.body.username, req.body.password)
