@@ -45,6 +45,9 @@ class Login extends React.Component {
   render() {
     return (
       <div className="container">
+      <div className="col-md-4 offset-md-4 text-center mt-3">
+       <h1 className="d-block">Inventory Manager</h1>
+      </div>
         <div className="col-md-4 offset-md-4">
           <div className="mt-5">
             <form id="loginForm" onSubmit={this.onSubmit}>
