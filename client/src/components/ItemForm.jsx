@@ -8,6 +8,7 @@ class ItemForm extends React.Component {
       description: '',
       quantity: '',
       category: '',
+      message: ''
     }
     this.formChange = this.formChange.bind(this);
   }
@@ -16,6 +17,7 @@ class ItemForm extends React.Component {
     var newState = {};
     var id = e.target.id.split('-')[1];
     newState[id] = e.target.value;
+    newState.message = '';
     this.setState(newState);
   }
 
@@ -30,12 +32,16 @@ class ItemForm extends React.Component {
             <form onSubmit={(e) => {
               e.preventDefault();
               e.target.reset();
-              document.getElementById('collapseBtn').click();
-              this.props.onSubmit({...this.state, type: 'item'});
-              this.setState(getInitialState());
+              if (this.state.name !== '' && this.state.quantity !== '' && this.state.category !== '') {
+                document.getElementById('collapseBtn').click();
+                this.props.onSubmit({...this.state, type: 'item'});
+                this.setState(getInitialState());
+              } else {
+                this.setState({message: 'Item name, Quantity and Category Required'})
+              }
             }}>
               <div>
-                <h3>Add Item</h3>
+                <h3 className="w-25 d-inline-block">Add Item</h3><span className="d-inline-block text-danger">{this.state.message}</span><br />
                 <label htmlFor="itemName" className="form-label">Item Name</label>
                 <input id="item-name" className="form-control" name="itemName" type="text" onChange={this.formChange}/>
 
@@ -67,6 +73,7 @@ var getInitialState = () => {
     description: '',
     quantity: '',
     category: '',
+    message: ''
   };
 }
 

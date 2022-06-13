@@ -93,7 +93,9 @@ class App extends React.Component {
     })
     .then(() => {
       this.getItems(this.state.currentCategory, data.item);
-    });
+    }).catch(err => {
+      console.log('HERE');
+    })
   }
 
   logout() {
