@@ -3,7 +3,8 @@ mongoose.connect('mongodb://localhost/inventory');
 
 var sessionSchema = mongoose.Schema({
   session: String,
-  userId: String
+  userId: String,
+  expireAt: { type: Date, expires: 40000, default: Date.now }
 });
 
 var userSchema = mongoose.Schema({
