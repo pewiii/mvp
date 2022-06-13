@@ -124,8 +124,11 @@ app.post('/user', (req, res) => {
         req.session.userId = user._id;
         res.send('Login Success');
       });
-    })
+    }).catch(err => {
+      res.sendStatus(409);
+    });
   } else {
+    console.log('PASSWORD', req.body.password);
     auth.verifyUser(req.body.username, req.body.password)
     .then(user => {
       console.log('LOGIN SUCCESS');
@@ -136,6 +139,7 @@ app.post('/user', (req, res) => {
       });
     }).catch(msg => {
       console.log('LOGIN FAIL');
+      res.sendStatus(400);
     })
   }
 });

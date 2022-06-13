@@ -21,7 +21,11 @@ var verifyUser = (username, password) => {
   return new Promise((resolve, reject) => {
     db.readUser(username)
     .then(user => {
-      var hashedPassword = Crypto.createHash('md5', password + user.salt).digest('hex').toString();
+      var testPassword = password + user.salt;
+      //var hashedPassword = Crypto.createHash('md5', testPassword).digest('hex').toString();
+      var hashedPassword = Crypto.createHash('sha256').update(password + user.salt).digest('hex');
+      console.log(hashedPassword);
+      console.log(user.password);
       if (hashedPassword === user.password) {
         resolve(user);
       } else {
@@ -35,7 +39,8 @@ var verifyUser = (username, password) => {
 
 var newUser = (username, password) => {
   var salt = Crypto.randomBytes(16).toString('hex');
-  var hashedPassword = Crypto.createHash('md5', password + salt).digest('hex').toString();
+  //var hashedPassword = Crypto.createHash('md5', password + salt).digest('hex').toString();
+  var hashedPassword = Crypto.createHash('sha256').update(password + salt).digest('hex');
   return db.createUser(username, salt, hashedPassword);
 }
 
