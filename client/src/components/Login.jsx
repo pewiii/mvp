@@ -11,7 +11,6 @@ class Login extends React.Component {
     }
     this.inputChange = this.inputChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-    console.log(document.cookie);
   }
 
   inputChange(e) {
@@ -19,9 +18,7 @@ class Login extends React.Component {
     var value = e.target.id === 'createUser' ? e.target.checked : e.target.value;
     newState[e.target.id] = value;
     newState.message = '';
-    this.setState(newState, () => {
-      console.log(this.state);
-    });
+    this.setState(newState);
   }
 
   onSubmit(e) {
@@ -35,7 +32,6 @@ class Login extends React.Component {
       },
       body: JSON.stringify(this.state)
     }).then(res => {
-      console.log('STATUS', res.status);
       if (res.status === 409) {
         this.setState({message: 'Username Taken'});
       } else if (res.status === 400) {

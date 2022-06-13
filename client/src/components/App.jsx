@@ -38,7 +38,6 @@ class App extends React.Component {
       res.json()
       .then(data => {
         if (Array.isArray(data.items)) {
-          console.log(data);
           this.setState(data);
         } else {
           var newItems = [...this.state.items];
@@ -93,7 +92,6 @@ class App extends React.Component {
       body: JSON.stringify(data)
     })
     .then(() => {
-      console.log('data', data);
       this.getItems(this.state.currentCategory, data.item);
     });
   }
@@ -118,12 +116,9 @@ class App extends React.Component {
       if (a[sortOn] < b[sortOn]) { return 1 }
       return 0;
     })
-    console.log(!true);
     var sortUp = !this.state.sortUp;
     var selectedSort = sortOn
-    this.setState({ items, sortUp, selectedSort }, () => {
-      console.log(this.state);
-    });
+    this.setState({ items, sortUp, selectedSort });
   }
 
   render() {

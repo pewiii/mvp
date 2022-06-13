@@ -16,9 +16,7 @@ class ItemForm extends React.Component {
     var newState = {};
     var id = e.target.id.split('-')[1];
     newState[id] = e.target.value;
-    this.setState(newState, () => {
-      console.log(this.state);
-    });
+    this.setState(newState);
   }
 
   render() {
